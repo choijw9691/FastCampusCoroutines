@@ -1,52 +1,48 @@
 package kr.co.fastcampus.co.kr.coroutines.ui.main
 
 import android.os.Bundle
-import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kr.co.fastcampus.co.kr.coroutines.databinding.FragmentMainBinding
+import kr.co.fastcampus.co.kr.coroutines.databinding.FragmentFavouritesBinding
 
-class ImageSearchFragment : Fragment() {
 
+class FavouritesFragment : Fragment() {
     private lateinit var imageSearchViewModel: ImageSearchViewModel
-    private val adapter: ImageSearchAdapter = ImageSearchAdapter() { item ->
-        imageSearchViewModel.toggle(item)
-    }
+    private val adapter: FavouritesAdapter = FavouritesAdapter()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageSearchViewModel = ViewModelProvider(requireActivity())[ImageSearchViewModel::class.java]
-
 
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-
-        val binding = FragmentMainBinding.inflate(inflater, container, false)
-        val root = binding.root
+    ): View? {
+        val binding = FragmentFavouritesBinding.inflate(inflater, container, false)
 
         viewLifecycleOwner.lifecycleScope.launch {
 
-            imageSearchViewModel.pagingDataFlow.collectLatest { items -> adapter.submitData(items) }
+            imageSearchViewModel.favoritesFlow
+                .collectLatest { items -> adapter.setItem(items) }
 
         }
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = GridLayoutManager(context, 4)
-        binding.search.setOnClickListener {
-            imageSearchViewModel.handleQuery(query = binding.editText.text.trim().toString())
-        }
 
-        return root
+
+        return binding.root
     }
+
 }

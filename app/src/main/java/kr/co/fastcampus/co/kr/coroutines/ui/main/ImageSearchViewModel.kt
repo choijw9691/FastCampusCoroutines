@@ -16,7 +16,7 @@ class ImageSearchViewModel : ViewModel() {
     private val repository = NaverImageSearchRepository()
     private val queryFlow = MutableSharedFlow<String>()
     private val favorites = mutableSetOf<Item>()
-    private val _favoritesFlow = MutableSharedFlow<List<Item>>()
+    private val _favoritesFlow = MutableSharedFlow<List<Item>>(replay = 1)
 
     val pagingDataFlow = queryFlow
         .flatMapLatest {
@@ -24,7 +24,7 @@ class ImageSearchViewModel : ViewModel() {
         }
         .cachedIn(viewModelScope)
 
-    val favoritesFlow = _favoritesFlow.asSharedFlow()
+    val favoritesFlow = _favoritesFlow.asSharedFlow() //sharedflow로 바뀜 mutable (x) == 값을 바꿀수 없다는 뜻 //클릭한 이벤트들이 여기 담김
 
     private fun searchImages(query: String): Flow<PagingData<Item>> =
         repository.getImageSearch(query)

@@ -1,11 +1,13 @@
 package kr.co.fastcampus.co.kr.coroutines.ui.main
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import kr.co.fastcampus.co.kr.coroutines.model.Item
 
-class ImageSearchAdapter(
+class  ImageSearchAdapter(
+
     private val like: (Item) -> Unit
 ) : PagingDataAdapter<Item, ImageSearchViewHolder>(comparator) {
 
@@ -23,7 +25,16 @@ class ImageSearchAdapter(
 
     companion object {
         val comparator = object : DiffUtil.ItemCallback<Item>() {
-            TODO("ItemCallback을 구현해야합니다.")
+            override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+                Log.d("JIWOUNG", "comparator: "+(oldItem.thumbnail == newItem.thumbnail).toString())
+                return oldItem.thumbnail == newItem.thumbnail
+            }
+
+            override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
+                Log.d("JIWOUNG","comparator1: "+(oldItem == newItem).toString())
+                return oldItem == newItem
+
+            }
         }
     }
 }
